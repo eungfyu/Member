@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.webapp.mybatis.blob.FileListDao">
+<select id="selectAll" resultType="com.webapp.mybatis.xxx.FileList">
+</select>
+
+<resultMap type="com.webapp.mybatis.xxx.FileList" id="fileListResultMap">
+<!-- <id property="fname" column="fname"/> -->
+<!-- <result property="flength" column="flength"/> -->
+<!-- <result property="flastModified" column="flastModified"/> -->
+<result property="image" column="image" jdbcType="BLOB"/>
+
+</resultMap>
+
+<select id="selectByName"  
+		resultMap="fileListResultMap"
+		parameterType="string">
+	select fname, 
+		   flength,
+		   flast_modified as flastModified, 
+		   image
+	  from filelist
+	 where fname = #{fname} 
+</select>
+
+<insert id="insert" parameterType="com.webapp.mybatis.xxx.FileList">
+	insert into filelist
+	(
+		fname,
+		flength,
+		flast_modified,
+		image
+	
+	)
+	values
+	(
+		#{fname},
+		#{flength, jdbcType=INTEGER},
+		#{flastModified, jdbcType=TIMESTAMP},
+		#{image, jdbcType=BLOB}
+	)
+</insert>
+
+</mapper>

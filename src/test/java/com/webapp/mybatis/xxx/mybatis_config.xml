@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+  <typeAliases>
+  	<typeAlias type="com.webapp.model.Member" alias="Member"/>
+  </typeAliases>
+  
+  <environments default="oracle">
+    <environment id="oracle">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+      	<property name="driver" value="oracle.jdbc.OracleDriver"/>
+      	<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+      	<property name="username" value="scott"/>
+      	<property name="password" value="tiger"/>
+      </dataSource>
+    </environment>
+    <environment id="mysql">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+      	<property name="driver" value="com.mysql.jdbc.Driver"/>
+      	<property name="url" value="jdbc:mysql://localhost:3306/world"/>
+      	<property name="username" value="world"/>
+      	<property name="password" value="1234"/>
+      </dataSource>
+    </environment>
+  </environments>
+  
+  <databaseIdProvider type="DB_VENDOR">
+	  <property name="Oracle" value="oracle"/>
+	  <property name="MySQL" value="mysql"/>
+  </databaseIdProvider>
+  
+<!--   <mappers> -->
+<!--     <mapper resource="com/webapp/mapper/MemberMapper.xml"/> -->
+<!--     <mapper resource="com/webapp/mapper/IdGeneratorMapper.xml"/> -->
+<!--   </mappers> -->
+</configuration>

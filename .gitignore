@@ -1,0 +1,11 @@
+.classpath
+.project
+.settings/
+.springBeans
+RemoteSystemsTempFiles/
+beans.xml
+mybatis_xxx.xml
+build/
+target/
+src/main/webapp/WEB-INF/css/bootstrap-3.3.5
+src/main/webapp/WEB-INF/js/jquery-ui-1.11.4

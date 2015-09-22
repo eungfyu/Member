@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+<!-- TransactionManager -->
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<property name="dataSource" ref="dataSource"/>
+</bean>
+
+<!-- JdbcTemplate -->
+<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+	<property name="dataSource">
+		<ref bean="dataSource"/>
+	</property>
+</bean>
+
+<!-- SqlSessionFactory -->
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="dataSource" ref="dataSource"/>
+	<property name="mapperLocations">
+		<list>
+			<value>com/webapp/mapper/MemberMapper.xml</value>
+			<value>com/webapp/mapper/IdGeneratorMapper.xml</value>
+		</list>
+	</property>
+	<property name="typeAliases">
+		<list>
+			<value>com.webapp.model.Member</value>
+		</list>
+	</property>
+	<property name="databaseIdProvider">
+		<bean id="vendorIdProvider" class="org.apache.ibatis.mapping.VendorDatabaseIdProvider">
+			<property name="properties">
+				<props>
+					<prop key="Oracle">oracle</prop>
+					<prop key="MySQL">mysql</prop>
+				</props>
+			</property>	
+		</bean>
+	</property>  
+</bean>
+
+<!-- SqlSessionTemplate -->
+<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	<constructor-arg ref="sqlSessionFactory"/>
+</bean>
+
+<!-- MemberMapper -->
+<bean id="memberMapper" class="org.mybatis.spring.mapper.MapperFactoryBean"
+	  p:mapperInterface="com.webapp.mapper.MemberMapper"
+	  p:sqlSessionFactory-ref="sqlSessionFactory"/>
+	  
+<!-- IdGeneratorMapper -->
+<bean id="idGeneratorMapper" class="org.mybatis.spring.mapper.MapperFactoryBean"
+	  p:mapperInterface="com.webapp.mapper.IdGeneratorMapper"
+	  p:sqlSessionFactory-ref="sqlSessionFactory"/>	  
+
+<!-- SpringMemberDao -->
+<bean id="springMemberDao" class="com.webapp.dao.SpringMemberDao">
+	<property name="template" ref="jdbcTemplate"/>
+	<property name="useGeneratorTable" value="false"/>
+</bean>
+
+<!-- MybatisMemberDao -->
+<bean id="mybatisMemberDao" class="com.webapp.dao.MybatisMemberDao">
+	<property name="memberMapper" ref="memberMapper"/>
+	<property name="idGeneratorMapper" ref="idGeneratorMapper"/>
+	<property name="useGeneratorTable" value="false"/>
+</bean>
+
+<bean id="member" class="com.webapp.model.Member" scope="prototype">
+	<property name="email" value="xxx@oracle.com"/>
+	<property name="password" value="1234"/>
+	<property name="name" value="홍길동"/>
+	<property name="regdate" value="2011/01/11 12:30:10"/>
+</bean>
+
+<tx:annotation-driven transaction-manager="transactionManager" order="10"/>
+<aop:aspectj-autoproxy/>
+
+<bean id="loggingAspect" class="com.webapp.aspect.LoggingAspect">
+</bean>
+
+<beans profile="spring">
+<!-- <bean id="logProxyMemberDao" class="com.webapp.dao.LogProxyMemberDao"> -->
+<!-- 	<constructor-arg ref="springMemberDao"/> -->
+<!-- </bean> -->
+
+<!-- MemberListService -->
+<bean id="memberListService" class="com.webapp.service.MemberListService">
+	<property name="memberDao" ref="springMemberDao"/>
+</bean>
+
+<!-- MemberInfoService -->
+<bean id="memberInfoService" class="com.webapp.service.MemberInfoService">
+	<property name="memberDao" ref="springMemberDao"/>
+</bean>
+
+<!-- MemberRegisterService -->
+<bean id="memberRegisterService" class="com.webapp.service.MemberRegisterService">
+	<property name="memberDao" ref="springMemberDao"/>
+</bean>
+
+<!-- MemberModifyService -->
+<bean id="memberModifyService" class="com.webapp.service.MemberModifyService">
+	<property name="memberDao" ref="springMemberDao"/>
+</bean>
+
+<!-- MemberUnRegisterService -->
+<bean id="memberUnRegisterService" class="com.webapp.service.MemberUnRegisterService">
+	<property name="memberDao" ref="springMemberDao"/>
+</bean>
+
+</beans>
+
+<beans profile="mybatis">
+<!-- <bean id="logProxyMemberDao" class="com.webapp.dao.LogProxyMemberDao"> -->
+<!-- 	<constructor-arg ref="mybatisMemberDao"/> -->
+<!-- </bean> -->
+
+<!-- MemberListService -->
+<bean id="memberListService" class="com.webapp.service.MemberListService">
+	<property name="memberDao" ref="mybatisMemberDao"/>
+</bean>
+
+<!-- MemberInfoService -->
+<bean id="memberInfoService" class="com.webapp.service.MemberInfoService">
+	<property name="memberDao" ref="mybatisMemberDao"/>
+</bean>
+
+<!-- MemberRegisterService -->
+<bean id="memberRegisterService" class="com.webapp.service.MemberRegisterService">
+	<property name="memberDao" ref="mybatisMemberDao"/>
+</bean>
+
+<!-- MemberModifyService -->
+<bean id="memberModifyService" class="com.webapp.service.MemberModifyService">
+	<property name="memberDao" ref="mybatisMemberDao"/>
+</bean>
+
+<!-- MemberUnRegisterService -->
+<bean id="memberUnRegisterService" class="com.webapp.service.MemberUnRegisterService">
+	<property name="memberDao" ref="mybatisMemberDao"/>
+</bean>
+
+
+</beans>
+
+</beans>

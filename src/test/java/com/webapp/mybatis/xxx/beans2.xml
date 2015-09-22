@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+	<property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+	<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+	<property name="username">
+		<value>scott</value>
+	</property>
+	<property name="password">
+		<value>tiger</value>
+	</property>
+	<property name="maxActive" value="10"/>
+	<property name="maxWait" value="-1"/>
+</bean>
+<bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource">
+	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+	<property name="url" value="jdbc:mysql://localhost:3306/world"/>
+	<property name="username">
+		<value>world</value>
+	</property>
+	<property name="password">
+		<value>1234</value>
+	</property>
+	<property name="maxActive" value="10"/>
+	<property name="maxWait" value="-1"/>
+</bean>
+
+
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="configLocation" value="mybatis/mybatis_config.xml"/>
+	<property name="dataSource" ref="dataSource2"/>
+<!-- 	<property name="mapperLocations"> -->
+<!-- 		<list> -->
+<!-- 			<value>com/webapp/mapper/MemberMapper.xml</value> -->
+<!-- 			<value>com/webapp/mapper/IdGeneratorMapper.xml</value> -->
+<!-- 		</list> -->
+<!-- 	</property> -->
+<!-- 	<property name="typeAliases"> -->
+<!-- 		<list> -->
+<!-- 			<value>com.webapp.model.Member</value> -->
+<!-- 		</list> -->
+<!-- 	</property> -->
+	<property name="databaseIdProvider">
+		<bean class="org.apache.ibatis.mapping.VendorDatabaseIdProvider">
+			<property name="properties">
+				<props>
+					<prop key="Oracle">oracle</prop>
+					<prop key="MySQL">mysql</prop>
+				</props>
+			</property>
+		</bean>
+	</property>
+
+</bean>
+
+
+
+</beans>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.webapp.mapper.MemberMapper">
+
+<resultMap type="Member" id="memberResultMap">
+	<id property="id" column="id"/>
+	<id property="email" column="email"/>
+	<result property="password" column="password"/>
+	<result property="name" column="name"/>
+	<result property="regdate" column="regdate"/>
+</resultMap>
+
+<sql id="member">
+	select id, 
+		   email, 
+		   password, 
+		   name, 
+		   regdate 
+	  from member
+</sql>
+
+<select id="selectAll" 
+		resultMap="memberResultMap">
+		
+	<include refid="member"/>
+</select>
+
+<select id="select" 
+		parameterType="hashmap" 
+		resultMap="memberResultMap" databaseId="oracle">
+	select outer.rn,
+	       outer.id,
+	       outer.email,
+	       outer.password,
+	       outer.name,
+	       outer.regdate
+	  from (select rownum rn, inner.*
+		      from (select m.* 
+			          from member m
+			         order by m.id desc
+			 	   ) inner
+		   ) outer
+	 where outer.rn &gt;= #{firstItem}
+	   and outer.rn &lt;= #{lastItem}
+</select>
+
+<select id="select" 
+		parameterType="hashmap" 
+		resultMap="memberResultMap" databaseId="mysql">
+	<include refid="member"/>
+	order by id desc
+	limit #{offset}, #{count}
+</select>
+
+
+<select id="selectById"  
+		parameterType="int"
+		resultMap="memberResultMap">
+		
+	<include refid="member"/>
+	 where id = #{id}
+</select>
+
+<select id="selectByEmail"  
+		parameterType="string"
+		resultMap="memberResultMap">
+		
+	<include refid="member"/>
+	 where email = #{email} 
+</select>
+
+<select id="selectTotalCount" resultType="int">
+	select count(*) from member
+</select>
+
+<insert id="insertGenerator" parameterType="Member">
+	insert into member
+	(
+		id,
+		email,
+		password,
+		name,
+		regdate
+	)
+	values
+	(
+		#{id},
+		#{email},
+		#{password},
+		#{name},
+		#{regdate}
+	)
+</insert>
+
+<insert id="insert" parameterType="Member" databaseId="oracle">
+	<selectKey keyProperty="id" resultType="int" order="BEFORE">
+		select member_id_seq.nextval from dual
+	</selectKey>
+	insert into member
+	(
+		id,
+		email,
+		password,
+		name,
+		regdate
+	)
+	values
+	(
+		#{id},
+		#{email},
+		#{password},
+		#{name},
+		#{regdate}
+	)
+</insert>
+
+<insert id="insert" 
+		parameterType="Member" 
+		useGeneratedKeys="true"
+		keyProperty="id" keyColumn="id" databaseId="mysql">
+	insert into member
+	(
+		email,
+		password,
+		name,
+		regdate
+	)
+	values
+	(
+		#{email},
+		#{password},
+		#{name},
+		#{regdate}
+	)
+</insert>
+
+<update id="update" parameterType="Member">
+	update member
+	<set>
+		<if test="password != null">
+			password= #{password},
+		</if>
+		<if test="name != null">
+			name	= #{name},
+		</if>
+	</set>
+	 where id 		= #{id}
+	   and email	= #{email}
+</update>
+
+<delete id="deleteById" parameterType="int">
+	delete from member
+	 where id = #{id}
+</delete>
+
+<delete id="deleteByEmail" parameterType="string">
+	delete from member
+	 where email = #{email}
+</delete>
+
+</mapper>

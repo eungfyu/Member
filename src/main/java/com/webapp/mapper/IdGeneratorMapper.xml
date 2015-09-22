@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.webapp.mapper.IdGeneratorMapper">
+<select id="selectByName" parameterType="string" resultType="hashmap">
+    select name as "name", 
+    	   nextval as "nextval", 
+    	   incval as "incval"
+      from id_generator
+     where name = #{name}
+       for update
+</select>
+
+<update id="update" parameterType="hashmap">
+    update id_generator
+       set nextval = #{nextval}
+     where name = #{name}
+</update>
+
+</mapper>

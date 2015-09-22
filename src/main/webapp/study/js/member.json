@@ -1,0 +1,9 @@
+ {
+			"email" : "xxx@webapp.com",
+			"password" : "1234",
+			"name" : "벨라",
+			"genger" : "female",
+			"hobby" : ["imperio", "crusio", "avadaKedavra"],
+			"comment" : "pureBlood",
+			"reception" : true
+}

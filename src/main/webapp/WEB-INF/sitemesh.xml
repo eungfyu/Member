@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sitemesh>
+  <!-- Map default decorator. This shall be applied to all paths if no other paths match. -->
+<!--   <mapping decorator="/default-decorator.html"/> -->
+
+  <!-- Map decorators to path patterns. -->
+<!--   <mapping path="/admin/*" decorator="/another-decorator.html"/> -->
+<!--   <mapping path="/*.special.jsp" decorator="/special-decorator.html"/> -->
+
+  <!-- Alternative convention. This is more verbose but allows multiple decorators
+       to be applied to a single path. -->
+  <mapping>
+    <path>/member/*</path>
+    <path>/login</path>
+    <path>/index.jsp</path>
+    <decorator>/WEB-INF/views/decorators/main-decorator.jsp</decorator>
+    <decorator>/WEB-INF/views/decorators/logo-decorator.jsp</decorator>
+  </mapping>
+
+  <!-- Exclude path from decoration. -->
+  <mapping path="/study/*" exclude="true"/>
+
+</sitemesh>
